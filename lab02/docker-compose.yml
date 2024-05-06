@@ -1,0 +1,47 @@
+version: "3.9"
+
+services:
+  backend:
+    image: node:16-alpine
+    ports:
+      - "8081:3000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - keycloak
+      - postgres
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    ports:
+      - "8080:8080"
+    networks:
+      - my-network
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+
+      KC_DB: postgres
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: password
+
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_PORT: 8080
+    command: start-dev --verbose
+
+  postgres:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    networks:
+      - my-network
+
+networks:
+  my-network:
+
+volumes:
+  postgres_data:

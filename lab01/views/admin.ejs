@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+</head>
+<body>
+  <h1>Welcome Admin, <?= username ?></h1>
+
+  <h2>List of Users</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Login</th>
+        <th>Role</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for (const user of cred.users) { %>
+        <tr>
+          <td><%= user.login %></td>
+          <td><%= user.role %></td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+</body>
+</html>

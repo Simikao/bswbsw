@@ -2,11 +2,12 @@ version: "3.9"
 
 services:
   frontend:
-    build: .
+    build: ./app
     ports:
       - "3000:3000"
     depends_on:
       - keycloak
+      - resource-server
 
   keycloak:
     image: quay.io/keycloak/keycloak:latest
@@ -39,6 +40,15 @@ services:
       POSTGRES_PASSWORD: password
     networks:
       - my-network
+
+  resource-server:
+    build: ./resources
+    ports:
+      - "4000:4000"
+    networks:
+      - my-network
+    depends_on:
+      - keycloak
 
 networks:
   my-network:

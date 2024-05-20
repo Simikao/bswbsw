@@ -9,9 +9,8 @@ const appPort = 3000;
 const authEndpoint = "https://dev-8awfxgwdtajxa8v5.eu.auth0.com/authorize";
 const tokenEndpoint = "https://dev-8awfxgwdtajxa8v5.eu.auth0.com/oauth/token";
 
-const clientId = "qj2RtiiN6Umfo2OZIYoFbvo3yiG7CPZj";
-const clientSecret =
-	"ar3LXmI_1dOdJ06y-VhxbzfbB-touODUjIeCvPMyslktrqi0ixVekj9M5msjhypB";
+const clientId = "testuser";
+const clientSecret = "et3uvIRxhPE5VNQWreOYZEqU1gfIO6zr";
 
 const redirectUrl = "http://localhost:3000/myredirect";
 

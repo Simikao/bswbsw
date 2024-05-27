@@ -1,24 +1,45 @@
 const express = require("express");
 const axios = require("axios");
+const crypto = require("crypto");
 const { param } = require("express/lib/request");
+
+const jwt = require("jsonwebtoken");
 
 const app = express();
 
 const appPort = 3000;
 
-const authEndpoint = "https://dev-8awfxgwdtajxa8v5.eu.auth0.com/authorize";
-const tokenEndpoint = "https://dev-8awfxgwdtajxa8v5.eu.auth0.com/oauth/token";
+const authEndpoint =
+	"http://localhost:8080/realms/master/protocol/openid-connect/auth";
+const tokenEndpoint =
+	"http://192.168.0.3:8080/realms/master/protocol/openid-connect/token";
 
 const clientId = "testuser";
 const clientSecret = "et3uvIRxhPE5VNQWreOYZEqU1gfIO6zr";
 
 const redirectUrl = "http://localhost:3000/myredirect";
 
-const apiProtectedEnpoint = "http://localhost:4000/protected/data";
+const apiProtectedEnpoint = "http://192.168.0.4:4000/protected/data";
 
 // Only for demonstration - PKCE must be random at each request for auth code - never ever do like that with production code!
 const codeVerifier = "23a8acb0cd92f7756649dfb32f7bcfd19f1ac5a8c2b56b1cfac70724";
 const codeChallenge = "yK4QBx3RIdvqQcQvjtYLFV-iTa7cBZkKQAadOsNRm40";
+
+// // PKCE code generation
+// function base64URLEncode(str) {
+// 	return str
+// 		.toString("base64")
+// 		.replace(/\+/g, "-")
+// 		.replace(/\//g, "_")
+// 		.replace(/=+$/, "");
+// }
+//
+// function sha256(buffer) {
+// 	return crypto.createHash("sha256").update(buffer).digest();
+// }
+
+// const codeVerifier = base64URLEncode(crypto.randomBytes(32));
+// const codeChallenge = base64URLEncode(sha256(codeVerifier));
 
 const authRequest = `${authEndpoint}?
 response_type=code&
@@ -45,13 +66,28 @@ app.get("/", (req, res) => {
 
 app.get("/myredirect", (req, res) => {
 	const params = new URLSearchParams();
+	console.log("am here 1");
+
+	console.log(params);
 
 	params.append("grant_type", "authorization_code");
+	console.log("am here 2");
+	console.log(params);
 	params.append("redirect_uri", redirectUrl);
+	console.log("am here 3");
+	console.log(params);
 	params.append("client_id", clientId);
+	console.log("am here 4");
+	console.log(params);
 	params.append("client_secret", clientSecret);
+	console.log("am here 5");
+	console.log(params);
 	params.append("code_verifier", codeVerifier);
+	console.log("am here 6");
+	console.log(params);
 	params.append("code", req.query.code);
+	console.log("am here 8");
+	console.log(params);
 
 	return axios
 		.post(tokenEndpoint, params)
@@ -59,7 +95,7 @@ app.get("/myredirect", (req, res) => {
 			accessToken = result.data.access_token || "";
 
 			console.log("Rezultat zapytania o token");
-			console.log(result.data.data);
+			console.log(result.data);
 			console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
 			return axios.get(apiProtectedEnpoint, {
 				headers: {
@@ -95,6 +131,23 @@ app.get("/myredirect", (req, res) => {
 		});
 });
 
+app.use("/protected", (req, res, next) => {
+	const authHeader = req.headers["authorization"];
+	if (authHeader) {
+		const token = authHeader.split(" ")[1];
+		jwt.verify(token, "YOUR_PUBLIC_KEY", (err, user) => {
+			if (err) return res.sendStatus(403);
+			req.user = user;
+			next();
+		});
+	} else {
+		res.sendStatus(401);
+	}
+});
+
+app.get("/protected/data", (req, res) => {
+	res.json({ data: "This is protected data" });
+});
 app.listen(appPort, (err) => {
 	console.log(`App listening on port ${appPort}`);
 });

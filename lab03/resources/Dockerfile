@@ -17,4 +17,4 @@ RUN npm install
 EXPOSE 4000
 
 # Start the application
-CMD ["node", "resource-server.js"]
+CMD ["node", "src/resource-server.js"]

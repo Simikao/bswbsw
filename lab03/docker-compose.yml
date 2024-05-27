@@ -3,6 +3,8 @@ version: "3.9"
 services:
   frontend:
     build: ./app
+    networks:
+      - my-network
     ports:
       - "3000:3000"
     depends_on:
@@ -52,6 +54,7 @@ services:
 
 networks:
   my-network:
+    driver: bridge
 
 volumes:
   postgres_data:

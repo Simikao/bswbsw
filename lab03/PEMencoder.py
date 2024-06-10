@@ -6,9 +6,11 @@ def convert_public_key(text):
     line_length = 64
     lines = []
     for i in range(0, len(text), line_length):
-        lines.append(text[i : i + line_length] + "\n")
+        lines.append('"' + text[i : i + line_length] + '\\n"' + " +" "\n")
     return (
-        "-----BEGIN PUBLIC KEY-----\n" + "".join(lines) + "-----END PUBLIC KEY-----\n"
+        '"-----BEGIN PUBLIC KEY-----\\n" +\n'
+        + "".join(lines)
+        + '"-----END PUBLIC KEY-----\\n"\n'
     )
 
 

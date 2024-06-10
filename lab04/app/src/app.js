@@ -9,7 +9,7 @@ const appPort = 3000;
 const authEndpoint =
   "http://localhost:8080/realms/master/protocol/openid-connect/auth";
 const tokenEndpoint =
-  "http://172.25.0.3:8080/realms/master/protocol/openid-connect/token";
+  "http://keycloak:8080/realms/master/protocol/openid-connect/token";
 
 const clientId = "testuser";
 const clientSecret = "et3uvIRxhPE5VNQWreOYZEqU1gfIO6zr";
@@ -19,7 +19,7 @@ const backendSecret = "ve61XyxPPUMZ0rSIRhauMb977uYiIaA9";
 
 const redirectUrl = "http://localhost:3000/myredirect";
 
-const apiProtectedEnpoint = "http://172.25.0.4:4000/protected/data";
+const apiProtectedEnpoint = "http://resource-server:4000/protected/data";
 
 // Only for demonstration - PKCE must be random at each request for auth code - never ever do like that with production code!
 const codeVerifier = "23a8acb0cd92f7756649dfb32f7bcfd19f1ac5a8c2b56b1cfac70724";
